@@ -13,6 +13,7 @@ echo -e " [-] Getting Services.."
 free -m > /tmp/configupload/free.txt 2>&1
 ps aux | sort -rk 3,3 > /tmp/configupload/ps.txt 2>&1
 top -n 1 -b > /tmp/configupload/top.txt 2>&1
+cp /proc/cpuinfo /tmp/configupload
 echo -e "\n== SERVICES\n" >> /tmp/configupload/services.txt 2>&1
 systemctl -t service -a >> /tmp/configupload/services.txt 2>&1
 echo -e "\n== STATUS\n" >> /tmp/configupload/services.txt 2>&1
@@ -65,6 +66,8 @@ echo -e "\n== DOCKER CONFIG\n" >> /tmp/configupload/docker.txt
 cat /root/.docker/config.json >> /tmp/configupload/docker.txt 2>&1
 echo -e "\n== DOCKER INSPECT IMAGES\n" >> /tmp/configupload/docker.txt
 docker inspect $(docker images -q) >> /tmp/configupload/docker.txt 2>&1
+echo -e "\n== DOCKER CONTAINERS\n" >> /tmp/configupload/docker.txt 2>&1
+du -shx /var/lib/docker/containers/* >> /tmp/configupload/docker.txt 2>&1
 
 echo -e " [-] Getting Serviced Status.."
 echo -e "\n== STATUS\n" > /tmp/configupload/status.txt 2>&1
