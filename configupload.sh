@@ -7,10 +7,11 @@ echo -e " [-] Initializing.. "
 rm -Rf /tmp/configupload
 mkdir /tmp/configupload > /dev/null 2>&1
 echo -e "CONFIGUPLOAD\nBEGIN - "  $(date) "\n" > /tmp/configupload/runtime.txt
+uname -a >> /tmp/configupload/runtime.txt
 
 echo -e " [-] Getting Services.."
 free -m > /tmp/configupload/free.txt 2>&1
-ps auxc | sort -rk 3,3 > /tmp/configupload/ps.txt 2>&1
+ps aux | sort -rk 3,3 > /tmp/configupload/ps.txt 2>&1
 top -n 1 -b > /tmp/configupload/top.txt 2>&1
 systemctl -t service -a > /tmp/configupload/services.txt 2>&1
 ifconfig > /tmp/configupload/ifconfig.txt
@@ -31,6 +32,7 @@ tail /var/log/messages -n 5000 > /tmp/configupload/messages
 
 echo -e " [-] Getting Disk Info.."
 du -shx /opt/serviced/var/isvcs/* > /tmp/configupload/isvcs.txt 2>&1
+mount > /tmp/configupload/mount.txt 2>&1
 df -h > /tmp/configupload/df.txt 2>&1
 fdisk -l > /tmp/configupload/fdisk.txt 2>&1
 lsblk > /tmp/configupload/lsblk.txt 2>&1
@@ -44,6 +46,8 @@ echo -e "\n== DOCKER INFO\n" >> /tmp/configupload/docker.txt
 docker info >> /tmp/configupload/docker.txt 2>&1
 echo -e "\n== DOCKER IMAGES\n" >> /tmp/configupload/docker.txt
 docker images >> /tmp/configupload/docker.txt 2>&1
+echo -e "\n== DOCKER INSPECT IMAGES\n" >> /tmp/configupload/docker.txt
+docker inspect $(docker images -q) >> /tmp/configupload/docker.txt 2>&1
 
 echo -e " [-] Getting Serviced Status.."
 echo -e "\n== STATUS\n" > /tmp/configupload/status.txt 2>&1
