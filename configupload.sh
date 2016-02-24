@@ -35,6 +35,7 @@ cp /etc/passwd /tmp/configupload
 cut -d: -f 1 /etc/group >> /tmp/configupload/groups.txt
 hostname >> /tmp/configupload/hostname
 dmesg > /tmp/configupload/dmesg  2>&1
+dmidecode > /tmp/configupload/dmidecode  2>&1
 tail /var/log/messages -n 5000 > /tmp/configupload/messages
 yum list installed > /tmp/configupload/installed
 
