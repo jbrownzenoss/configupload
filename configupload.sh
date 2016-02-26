@@ -13,7 +13,7 @@ hostid >> /tmp/configupload/runtime.txt
 echo -e " [-] Getting Services.."
 free -m > /tmp/configupload/free.txt 2>&1
 ps aux | sort -rk 3,3 > /tmp/configupload/ps.txt 2>&1
-top -n 1 -b > /tmp/configupload/top.txt 2>&1
+top -n 1 -b -c > /tmp/configupload/top.txt 2>&1
 cp /proc/cpuinfo /tmp/configupload > /tmp/configupload/runtime.txt
 echo -e "\n== SERVICES\n" >> /tmp/configupload/services.txt 2>&1
 systemctl -t service -a >> /tmp/configupload/services.txt 2>&1
@@ -28,7 +28,6 @@ cp /etc/default/serviced /tmp/configupload > /tmp/configupload/runtime.txt
 cp /etc/selinux/config /tmp/configupload/selinux > /tmp/configupload/runtime.txt
 cp /etc/fstab /tmp/configupload > /tmp/configupload/runtime.txt
 cp /etc/redhat-release /tmp/configupload > /tmp/configupload/runtime.txt
-cp /var/log/syslog /tmp/configupload > /tmp/configupload/runtime.txt
 cp /etc/hosts /tmp/configupload > /tmp/configupload/runtime.txt
 cp /etc/hostname /tmp/configupload > /tmp/configupload/runtime.txt
 cp /etc/yum.repos.d/docker.repo /tmp/configupload > /tmp/configupload/runtime.txt
@@ -44,15 +43,15 @@ yum list installed > /tmp/configupload/installed
 
 echo -e " [-] Getting Disk Info.."
 du -shx /opt/serviced/var/isvcs/* > /tmp/configupload/isvcs.txt 2>&1
+for i in $(lsblk | grep disk | echo $(awk '{print $1'})); do parted /dev/$i print free; done > /tmp/configupload/partitions.txt 2>&1
 mount > /tmp/configupload/mount.txt 2>&1
-
 echo -e "\n== BLOCK\n" >> /tmp/configupload/df.txt 2>&1
 df -h >> /tmp/configupload/df.txt 2>&1
 echo -e "\n== INODE\n" >> /tmp/configupload/df.txt 2>&1
 df -ih >> /tmp/configupload/df.txt 2>&1
 echo -e "\n== MOUNTS\n" >> /tmp/configupload/df.txt 2>&1
 df -aTh >> /tmp/configupload/df.txt 2>&1
-/usr/sbin/lsof > /tmp/configupload/lsof.txt 2>&1
+/usr/sbin/lsof +D /opt/serviced/ > /tmp/configupload/lsof.txt 2>&1
 
 fdisk -l > /tmp/configupload/fdisk.txt 2>&1
 lsblk > /tmp/configupload/lsblk.txt 2>&1
@@ -83,7 +82,7 @@ serviced host list status >> /tmp/configupload/status.txt 2>&1
 echo -e "\n== POOLS\n" >> /tmp/configupload/status.txt 2>&1
 serviced pool list status >> /tmp/configupload/status.txt 2>&1
 echo -e "\n== PERMISIONS\n" >> /tmp/configupload/status.txt 2>&1
-find / -name serviced -type f | xargs ls -l >> /tmp/configupload/status.txt 2>&1
+find /etc /opt -name serviced -type f | xargs ls -l >> /tmp/configupload/status.txt 2>&1
 
 echo -e " [-] Getting Docker Journal.."
 journalctl -u docker --since today | tail -n 5000 > /tmp/configupload/docker.log 2>&1
