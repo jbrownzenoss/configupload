@@ -8,12 +8,13 @@ rm -Rf /tmp/configupload
 mkdir /tmp/configupload > /dev/null 2>&1
 echo -e "CONFIGUPLOAD\nBEGIN - "  $(date) > /tmp/configupload/runtime.txt
 uname -a >> /tmp/configupload/runtime.txt
+hostid >> /tmp/configupload/runtime.txt
 
 echo -e " [-] Getting Services.."
 free -m > /tmp/configupload/free.txt 2>&1
 ps aux | sort -rk 3,3 > /tmp/configupload/ps.txt 2>&1
 top -n 1 -b > /tmp/configupload/top.txt 2>&1
-cp /proc/cpuinfo /tmp/configupload
+cp /proc/cpuinfo /tmp/configupload > /tmp/configupload/runtime.txt
 echo -e "\n== SERVICES\n" >> /tmp/configupload/services.txt 2>&1
 systemctl -t service -a >> /tmp/configupload/services.txt 2>&1
 echo -e "\n== STATUS\n" >> /tmp/configupload/services.txt 2>&1
@@ -21,19 +22,21 @@ systemctl status >> /tmp/configupload/services.txt 2>&1
 ifconfig > /tmp/configupload/ifconfig.txt
 
 echo -e " [-] Getting Configuration.."
-cp /etc/sysconfig/docker /tmp/configupload
-cp /lib/systemd/system/docker.service /tmp/configupload
-cp /etc/default/serviced /tmp/configupload
-cp /etc/selinux/config /tmp/configupload/selinux
-cp /etc/fstab /tmp/configupload
-cp /etc/redhat-release /tmp/configupload
-cp /etc/hosts /tmp/configupload
-cp /etc/hostname /tmp/configupload
-cp /etc/yum.repos.d/docker.repo /tmp/configupload
-cp /etc/group /tmp/configupload
-cp /etc/passwd /tmp/configupload
+cp /etc/sysconfig/docker /tmp/configupload > /tmp/configupload/runtime.txt
+cp /lib/systemd/system/docker.service /tmp/configupload > /tmp/configupload/runtime.txt
+cp /etc/default/serviced /tmp/configupload > /tmp/configupload/runtime.txt
+cp /etc/selinux/config /tmp/configupload/selinux > /tmp/configupload/runtime.txt
+cp /etc/fstab /tmp/configupload > /tmp/configupload/runtime.txt
+cp /etc/redhat-release /tmp/configupload > /tmp/configupload/runtime.txt
+cp /var/log/syslog /tmp/configupload > /tmp/configupload/runtime.txt
+cp /etc/hosts /tmp/configupload > /tmp/configupload/runtime.txt
+cp /etc/hostname /tmp/configupload > /tmp/configupload/runtime.txt
+cp /etc/yum.repos.d/docker.repo /tmp/configupload > /tmp/configupload/runtime.txt
+cp /etc/group /tmp/configupload > /tmp/configupload/runtime.txt
+cp /etc/passwd /tmp/configupload > /tmp/configupload/runtime.txt
 cut -d: -f 1 /etc/group >> /tmp/configupload/groups.txt
 hostname >> /tmp/configupload/hostname
+id -u -n >> /tmp/configupload/hostname 
 dmesg > /tmp/configupload/dmesg  2>&1
 dmidecode > /tmp/configupload/dmidecode  2>&1
 tail /var/log/messages -n 5000 > /tmp/configupload/messages
@@ -49,7 +52,7 @@ echo -e "\n== INODE\n" >> /tmp/configupload/df.txt 2>&1
 df -ih >> /tmp/configupload/df.txt 2>&1
 echo -e "\n== MOUNTS\n" >> /tmp/configupload/df.txt 2>&1
 df -aTh >> /tmp/configupload/df.txt 2>&1
-lsof > /tmp/configupload/lsof.txt 2>&1
+/usr/sbin/lsof > /tmp/configupload/lsof.txt 2>&1
 
 fdisk -l > /tmp/configupload/fdisk.txt 2>&1
 lsblk > /tmp/configupload/lsblk.txt 2>&1
