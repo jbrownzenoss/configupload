@@ -78,9 +78,9 @@ serviced service status >> /tmp/configupload/status.txt 2>&1
 echo -e "\n== HEALTHCHECK\n" >> /tmp/configupload/status.txt 2>&1
 serviced healthcheck >> /tmp/configupload/status.txt 2>&1
 echo -e "\n== HOSTS\n" >> /tmp/configupload/status.txt 2>&1
-serviced host list status >> /tmp/configupload/status.txt 2>&1
+serviced host list >> /tmp/configupload/status.txt 2>&1
 echo -e "\n== POOLS\n" >> /tmp/configupload/status.txt 2>&1
-serviced pool list status >> /tmp/configupload/status.txt 2>&1
+serviced pool list >> /tmp/configupload/status.txt 2>&1
 echo -e "\n== PERMISIONS\n" >> /tmp/configupload/status.txt 2>&1
 find /etc /opt -name serviced -type f | xargs ls -l >> /tmp/configupload/status.txt 2>&1
 
